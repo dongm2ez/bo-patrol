@@ -1,0 +1,15 @@
+{
+  "name": "bo-patrol",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@8.0.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev:web": "pnpm -F web dev",
+    "build:web": "pnpm -F web build",
+    "install:all": "pnpm install"
+  }
+}

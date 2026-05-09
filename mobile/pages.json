@@ -1,0 +1,79 @@
+{
+  "pages": [
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/task/list",
+      "style": {
+        "navigationBarTitleText": "我的任务",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/task/execute",
+      "style": {
+        "navigationBarTitleText": "执行巡检",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/record/list",
+      "style": {
+        "navigationBarTitleText": "巡检记录",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/ticket/create",
+      "style": {
+        "navigationBarTitleText": "上报问题",
+        "navigationStyle": "default"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "博物馆巡检",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#2979ff",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/home.png",
+        "selectedIconPath": "static/home-active.png"
+      },
+      {
+        "pagePath": "pages/task/list",
+        "text": "任务",
+        "iconPath": "static/task.png",
+        "selectedIconPath": "static/task-active.png"
+      },
+      {
+        "pagePath": "pages/record/list",
+        "text": "记录",
+        "iconPath": "static/record.png",
+        "selectedIconPath": "static/record-active.png"
+      }
+    ]
+  },
+  "uniIdRouter": {}
+}

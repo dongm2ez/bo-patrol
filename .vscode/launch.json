@@ -1,0 +1,76 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "🚀 启动后端服务",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/server/main.go",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "ENV": "development"
+            },
+            "showLog": true,
+            "trace": "verbose",
+            "console": "integratedTerminal",
+            "stopOnEntry": false
+        },
+        {
+            "name": "🗄️ 执行数据库迁移",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/migrate/main.go",
+            "cwd": "${workspaceFolder}",
+            "showLog": true
+        },
+        {
+            "name": "🌐 启动 Web 管理端",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "cd ${workspaceFolder}/web && npm install && npm run dev",
+            "cwd": "${workspaceFolder}/web"
+        },
+        {
+            "name": "📱 启动移动端 (H5)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "cd ${workspaceFolder}/mobile && npm install && npm run dev:h5",
+            "cwd": "${workspaceFolder}/mobile"
+        },
+        {
+            "name": "📱 启动移动端 (微信小程序)",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "cd ${workspaceFolder}/mobile && npm install && npm run dev:mp-weixin",
+            "cwd": "${workspaceFolder}/mobile"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "🎯 全栈启动 (后端 + Web)",
+            "configurations": [
+                "🚀 启动后端服务",
+                "🌐 启动 Web 管理端"
+            ],
+            "stopAll": true
+        },
+        {
+            "name": "📱 移动端开发 (后端 + H5)",
+            "configurations": [
+                "🚀 启动后端服务",
+                "📱 启动移动端 (H5)"
+            ],
+            "stopAll": true
+        },
+        {
+            "name": "🧪 初始化项目 (迁移 + 后端)",
+            "configurations": [
+                "🗄️ 执行数据库迁移",
+                "🚀 启动后端服务"
+            ],
+            "stopAll": true
+        }
+    ]
+}

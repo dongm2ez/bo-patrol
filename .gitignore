@@ -1,0 +1,213 @@
+.trae/
+
+# ============== Go ==============
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+output/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# ============== Node.js ==============
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# pnpm
+.pnpm
+.pnpm-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ============== Vue ==============
+# cache
+.cache/
+.temp/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# ============== UniApp ==============
+# unpackage
+unpackage/
+
+# wx
+.project
+.settings
+
+# h5
+.hbuilderx/
+manifest.json
+
+# ============== Database ==============
+*.db
+*.sqlite
+*.sqlite3
+
+# ============== Configuration ==============
+# Config files that contain secrets
+configs/config.local.yaml
+configs/*.local.*
+.local.yaml
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# ============== IDE & Editors ==============
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ============== OS ==============
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ============== Docker ==============
+docker-compose.override.yml
+docker-compose.local.yml
+
+# ============== Build ==============
+build/
+out/
+
+# ============== Coverage ==============
+coverage/
+coverage.out
+coverage.txt
+
+# ============== Profiling ==============
+*.prof
+*.pprof
+
+# ============== Temporary ==============
+tmp/
+temp/
+*.tmp
+*.bak
+
+# ============== Uploads ==============
+uploads/
+static/uploads/
+public/uploads/
+
+# ============== Logs ==============
+logs/
+*.log
+log/
+
+# ============== Cache ==============
+.cache/
+tmp/
+*.pyc
+
+# ============== Misc ==============
+*.pid
+*.seed
+*.pid.lock
+*-debug.log
+*-error.log
+*.backup
+*.dump
+*.tar
+*.tar.gz
+*.zip
+*.rar
+*.7z
