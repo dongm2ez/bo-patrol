@@ -70,7 +70,11 @@ func CreateTicket(c *gin.Context) {
 }
 
 func GetTicket(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	ticket, err := ticketService.GetTicketByID(uint(id))
 	if err != nil {
@@ -82,7 +86,11 @@ func GetTicket(c *gin.Context) {
 }
 
 func AssignTicket(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	var req domain.AssignTicketRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -99,7 +107,11 @@ func AssignTicket(c *gin.Context) {
 }
 
 func ProcessTicket(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	if err := ticketService.ProcessTicket(uint(id)); err != nil {
 		response.ServerError(c, err)
@@ -110,7 +122,11 @@ func ProcessTicket(c *gin.Context) {
 }
 
 func CompleteTicket(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	if err := ticketService.CompleteTicket(uint(id)); err != nil {
 		response.ServerError(c, err)

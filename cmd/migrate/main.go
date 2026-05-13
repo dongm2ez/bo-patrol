@@ -57,13 +57,18 @@ func main() {
 
 func seedData(db *gorm.DB) error {
 	var count int64
-	db.Model(&domain.User{}).Count(&count)
+	if err := db.Model(&domain.User{}).Count(&count).Error; err != nil {
+		return err
+	}
 	if count > 0 {
 		log.Println("用户数据已存在，跳过初始化")
 		return nil
 	}
 
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
 
 	admin := &domain.User{
 		Username: "admin",
@@ -79,7 +84,10 @@ func seedData(db *gorm.DB) error {
 		return err
 	}
 
-	inspectorPass, _ := bcrypt.GenerateFromPassword([]byte("123456"), bcrypt.DefaultCost)
+	inspectorPass, err := bcrypt.GenerateFromPassword([]byte("123456"), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
 
 	inspector := &domain.User{
 		Username: "inspector",
@@ -95,7 +103,10 @@ func seedData(db *gorm.DB) error {
 		return err
 	}
 
-	repairPass, _ := bcrypt.GenerateFromPassword([]byte("123456"), bcrypt.DefaultCost)
+	repairPass, err := bcrypt.GenerateFromPassword([]byte("123456"), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
 
 	repair := &domain.User{
 		Username: "repair",
@@ -133,7 +144,9 @@ func seedData(db *gorm.DB) error {
 
 func seedDepartmentData(db *gorm.DB) error {
 	var count int64
-	db.Model(&domain.Department{}).Count(&count)
+	if err := db.Model(&domain.Department{}).Count(&count).Error; err != nil {
+		return err
+	}
 	if count > 0 {
 		log.Println("科室数据已存在，跳过初始化")
 		return nil
@@ -218,7 +231,9 @@ func seedDepartmentData(db *gorm.DB) error {
 
 func seedSpaceData(db *gorm.DB) error {
 	var count int64
-	db.Model(&domain.SpaceLocation{}).Count(&count)
+	if err := db.Model(&domain.SpaceLocation{}).Count(&count).Error; err != nil {
+		return err
+	}
 	if count > 0 {
 		log.Println("空间数据已存在，跳过初始化")
 		return nil
@@ -324,7 +339,9 @@ func seedSpaceData(db *gorm.DB) error {
 
 func seedMuseumData(db *gorm.DB) error {
 	var galleryCount int64
-	db.Model(&domain.Gallery{}).Count(&galleryCount)
+	if err := db.Model(&domain.Gallery{}).Count(&galleryCount).Error; err != nil {
+		return err
+	}
 	if galleryCount > 0 {
 		log.Println("博物馆数据已存在，跳过初始化")
 		return nil

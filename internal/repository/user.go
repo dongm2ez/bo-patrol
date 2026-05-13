@@ -40,10 +40,14 @@ func (r *UserRepository) List(page, pageSize int) ([]domain.User, int64, error) 
 	var total int64
 
 	offset := (page - 1) * pageSize
-	r.db.Model(&domain.User{}).Count(&total)
-	err := r.db.Offset(offset).Limit(pageSize).Find(&users).Error
+	if err := r.db.Model(&domain.User{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	if err := r.db.Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
+		return nil, 0, err
+	}
 
-	return users, total, err
+	return users, total, nil
 }
 
 func (r *UserRepository) Update(id uint, updates map[string]interface{}) error {

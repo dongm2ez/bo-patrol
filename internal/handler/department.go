@@ -36,7 +36,11 @@ func CreateDepartment(c *gin.Context) {
 }
 
 func GetDepartment(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	dept, err := deptService.GetDepartment(uint(id))
 	if err != nil {
 		response.Fail(c, http.StatusNotFound, "科室不存在")
@@ -69,12 +73,20 @@ func ListDepartments(c *gin.Context) {
 }
 
 func GetDepartmentTree(c *gin.Context) {
-	tree := deptService.GetDepartmentTree()
+	tree, err := deptService.GetDepartmentTree()
+	if err != nil {
+		response.Fail(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 	response.Success(c, tree)
 }
 
 func UpdateDepartment(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	var req domain.CreateDepartmentRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ParamError(c, err.Error())
@@ -91,7 +103,11 @@ func UpdateDepartment(c *gin.Context) {
 }
 
 func DeleteDepartment(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	if err := deptService.DeleteDepartment(uint(id)); err != nil {
 		response.Fail(c, http.StatusInternalServerError, err.Error())
 		return

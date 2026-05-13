@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 
+	"gorm.io/gorm"
 	"github.com/bo-patrol/internal/domain"
 	"github.com/bo-patrol/internal/repository"
 )
@@ -16,7 +17,10 @@ func NewSpaceService(spaceRepo *repository.SpaceRepository) *SpaceService {
 }
 
 func (s *SpaceService) CreateLocation(req *domain.CreateSpaceRequest) (*domain.SpaceLocation, error) {
-	existing, _ := s.spaceRepo.GetLocationByCode(req.Code)
+	existing, err := s.spaceRepo.GetLocationByCode(req.Code)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
 	if existing != nil && existing.ID > 0 {
 		return nil, errors.New("空间代码已存在")
 	}
@@ -58,9 +62,12 @@ func (s *SpaceService) GetLocationsByFloor(floor int) ([]domain.SpaceLocation, e
 	return s.spaceRepo.GetLocationsByFloor(floor)
 }
 
-func (s *SpaceService) GetLocationTree() []domain.SpaceTreeResponse {
-	locations, _ := s.spaceRepo.GetAllLocations()
-	return s.buildLocationTree(nil, locations)
+func (s *SpaceService) GetLocationTree() ([]domain.SpaceTreeResponse, error) {
+	locations, err := s.spaceRepo.GetAllLocations()
+	if err != nil {
+		return nil, err
+	}
+	return s.buildLocationTree(nil, locations), nil
 }
 
 func (s *SpaceService) buildLocationTree(parentID *uint, locations []domain.SpaceLocation) []domain.SpaceTreeResponse {

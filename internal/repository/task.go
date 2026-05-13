@@ -32,12 +32,16 @@ func (r *TaskRepository) List(page, pageSize int, filters map[string]interface{}
 		query = query.Where(k+" = ?", v)
 	}
 
-	query.Count(&total)
-	err := query.Preload("Route").Preload("Assignee").
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	if err := query.Preload("Route").Preload("Assignee").
 		Offset((page - 1) * pageSize).Limit(pageSize).
-		Order("created_at DESC").Find(&tasks).Error
+		Order("created_at DESC").Find(&tasks).Error; err != nil {
+		return nil, 0, err
+	}
 
-	return tasks, total, err
+	return tasks, total, nil
 }
 
 func (r *TaskRepository) Update(id uint, updates map[string]interface{}) error {

@@ -20,8 +20,17 @@ func initUser() {
 }
 
 func getPageInfo(c *gin.Context) (int, int) {
-	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
-	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+	pageStr := c.DefaultQuery("page", "1")
+	pageSizeStr := c.DefaultQuery("pageSize", "10")
+	
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		page = 1
+	}
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil {
+		pageSize = 10
+	}
 	
 	if page < 1 {
 		page = 1
@@ -51,7 +60,11 @@ func ListUsers(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	user, err := userService.GetByID(uint(id))
 	if err != nil {
@@ -63,7 +76,11 @@ func GetUser(c *gin.Context) {
 }
 
 func UpdateUser(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	var updates map[string]interface{}
 	if err := c.ShouldBindJSON(&updates); err != nil {
@@ -83,7 +100,11 @@ func UpdateUser(c *gin.Context) {
 }
 
 func DeleteUser(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	if err := userService.Delete(uint(id)); err != nil {
 		response.ServerError(c, err)

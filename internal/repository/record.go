@@ -32,12 +32,16 @@ func (r *RecordRepository) List(page, pageSize int, filters map[string]interface
 		query = query.Where(k+" = ?", v)
 	}
 
-	query.Count(&total)
-	err := query.Preload("Task").Preload("Point").Preload("Inspector").
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	if err := query.Preload("Task").Preload("Point").Preload("Inspector").
 		Offset((page - 1) * pageSize).Limit(pageSize).
-		Order("check_time DESC").Find(&records).Error
+		Order("check_time DESC").Find(&records).Error; err != nil {
+		return nil, 0, err
+	}
 
-	return records, total, err
+	return records, total, nil
 }
 
 func (r *RecordRepository) Update(id uint, updates map[string]interface{}) error {

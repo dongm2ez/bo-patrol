@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"gorm.io/gorm"
 	"github.com/bo-patrol/internal/domain"
 	"github.com/bo-patrol/internal/repository"
 )
@@ -28,7 +29,13 @@ func parseDate(dateStr *string) *time.Time {
 }
 
 func (s *EquipmentService) CreateEquipment(req *domain.CreateEquipmentRequest) (*domain.Equipment, error) {
-	existing, _ := s.equipmentRepo.GetByCode(req.Code)
+	existing, err := s.equipmentRepo.GetByCode(req.Code)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	if existing != nil && existing.ID > 0 {
+		return nil, errors.New("设备代码已存在")
+	}
 	if existing != nil && existing.ID > 0 {
 		return nil, errors.New("设备代码已存在")
 	}

@@ -36,7 +36,11 @@ func CreateGallery(c *gin.Context) {
 }
 
 func GetGallery(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	gallery, err := museumService.GetGallery(uint(id))
 	if err != nil {
 		response.Fail(c, http.StatusNotFound, "展厅不存在")
@@ -66,7 +70,11 @@ func ListGalleries(c *gin.Context) {
 }
 
 func UpdateGallery(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	var req domain.CreateGalleryRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ParamError(c, err.Error())
@@ -83,7 +91,11 @@ func UpdateGallery(c *gin.Context) {
 }
 
 func DeleteGallery(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	if err := museumService.DeleteGallery(uint(id)); err != nil {
 		response.Fail(c, http.StatusInternalServerError, err.Error())
 		return
@@ -109,7 +121,11 @@ func CreateExhibit(c *gin.Context) {
 }
 
 func GetExhibit(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	exhibit, err := museumService.GetExhibit(uint(id))
 	if err != nil {
 		response.Fail(c, http.StatusNotFound, "展品不存在")
@@ -120,7 +136,16 @@ func GetExhibit(c *gin.Context) {
 }
 
 func ListExhibits(c *gin.Context) {
-	galleryID, _ := strconv.Atoi(c.Query("galleryId"))
+	galleryIDStr := c.Query("galleryId")
+	galleryID := 0
+	var err error
+	if galleryIDStr != "" {
+		galleryID, err = strconv.Atoi(galleryIDStr)
+		if err != nil {
+			response.ParamError(c, "无效的展厅ID参数")
+			return
+		}
+	}
 	level := domain.ExhibitLevel(c.Query("level"))
 	exhibits, err := museumService.ListExhibits(uint(galleryID), level)
 	if err != nil {
@@ -140,7 +165,11 @@ func ListExhibits(c *gin.Context) {
 }
 
 func UpdateExhibit(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	var req domain.CreateExhibitRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ParamError(c, err.Error())
@@ -157,7 +186,11 @@ func UpdateExhibit(c *gin.Context) {
 }
 
 func DeleteExhibit(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	if err := museumService.DeleteExhibit(uint(id)); err != nil {
 		response.Fail(c, http.StatusInternalServerError, err.Error())
 		return
@@ -167,8 +200,16 @@ func DeleteExhibit(c *gin.Context) {
 }
 
 func GetEnvironmentHistory(c *gin.Context) {
-	galleryID, _ := strconv.Atoi(c.Param("galleryId"))
-	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "50"))
+	galleryID, err := strconv.Atoi(c.Param("galleryId"))
+	if err != nil {
+		response.ParamError(c, "无效的展厅ID参数")
+		return
+	}
+	limitStr := c.DefaultQuery("limit", "50")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		limit = 50
+	}
 	records, err := museumService.GetEnvironmentHistory(uint(galleryID), limit)
 	if err != nil {
 		response.Fail(c, http.StatusInternalServerError, err.Error())

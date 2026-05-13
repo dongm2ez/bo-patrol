@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 
+	"gorm.io/gorm"
 	"github.com/bo-patrol/internal/domain"
 	"github.com/bo-patrol/internal/repository"
 )
@@ -16,7 +17,13 @@ func NewDepartmentService(deptRepo *repository.DepartmentRepository) *Department
 }
 
 func (s *DepartmentService) CreateDepartment(req *domain.CreateDepartmentRequest) (*domain.Department, error) {
-	existing, _ := s.deptRepo.GetByCode(req.Code)
+	existing, err := s.deptRepo.GetByCode(req.Code)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	if existing != nil && existing.ID > 0 {
+		return nil, errors.New("科室代码已存在")
+	}
 	if existing != nil && existing.ID > 0 {
 		return nil, errors.New("科室代码已存在")
 	}
@@ -52,9 +59,12 @@ func (s *DepartmentService) GetDepartmentsByType(deptType domain.DepartmentType)
 	return s.deptRepo.GetByType(deptType)
 }
 
-func (s *DepartmentService) GetDepartmentTree() []domain.DepartmentTreeResponse {
-	depts, _ := s.deptRepo.GetAll()
-	return s.buildTree(nil, depts)
+func (s *DepartmentService) GetDepartmentTree() ([]domain.DepartmentTreeResponse, error) {
+	depts, err := s.deptRepo.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return s.buildTree(nil, depts), nil
 }
 
 func (s *DepartmentService) buildTree(parentID *uint, depts []domain.Department) []domain.DepartmentTreeResponse {
@@ -85,7 +95,10 @@ func (s *DepartmentService) UpdateDepartment(id uint, req *domain.CreateDepartme
 	}
 
 	if req.Code != dept.Code {
-		existing, _ := s.deptRepo.GetByCode(req.Code)
+		existing, err := s.deptRepo.GetByCode(req.Code)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
 		if existing != nil && existing.ID > 0 && existing.ID != id {
 			return nil, errors.New("科室代码已存在")
 		}
@@ -108,7 +121,10 @@ func (s *DepartmentService) UpdateDepartment(id uint, req *domain.CreateDepartme
 }
 
 func (s *DepartmentService) DeleteDepartment(id uint) error {
-	children, _ := s.deptRepo.GetByParentID(id)
+	children, err := s.deptRepo.GetByParentID(id)
+	if err != nil {
+		return err
+	}
 	if len(children) > 0 {
 		return errors.New("该科室下还有子科室，无法删除")
 	}

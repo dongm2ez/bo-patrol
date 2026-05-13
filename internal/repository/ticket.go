@@ -32,12 +32,16 @@ func (r *TicketRepository) List(page, pageSize int, filters map[string]interface
 		query = query.Where(k+" = ?", v)
 	}
 
-	query.Count(&total)
-	err := query.Preload("Reporter").Preload("Assignee").
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	if err := query.Preload("Reporter").Preload("Assignee").
 		Offset((page - 1) * pageSize).Limit(pageSize).
-		Order("created_at DESC").Find(&tickets).Error
+		Order("created_at DESC").Find(&tickets).Error; err != nil {
+		return nil, 0, err
+	}
 
-	return tickets, total, err
+	return tickets, total, nil
 }
 
 func (r *TicketRepository) Update(id uint, updates map[string]interface{}) error {

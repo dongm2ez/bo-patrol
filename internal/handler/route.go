@@ -56,7 +56,11 @@ func CreateRoute(c *gin.Context) {
 }
 
 func GetRoute(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	route, err := routeService.GetRouteByID(uint(id))
 	if err != nil {
@@ -68,7 +72,11 @@ func GetRoute(c *gin.Context) {
 }
 
 func UpdateRoute(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	var updates map[string]interface{}
 	if err := c.ShouldBindJSON(&updates); err != nil {
@@ -87,7 +95,11 @@ func UpdateRoute(c *gin.Context) {
 }
 
 func DeleteRoute(c *gin.Context) {
-	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	if err := routeService.DeleteRoute(uint(id)); err != nil {
 		response.ServerError(c, err)
@@ -98,7 +110,11 @@ func DeleteRoute(c *gin.Context) {
 }
 
 func ListPoints(c *gin.Context) {
-	routeID, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	routeID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	points, err := routeService.GetPointsByRouteID(uint(routeID))
 	if err != nil {
@@ -110,7 +126,11 @@ func ListPoints(c *gin.Context) {
 }
 
 func CreatePoint(c *gin.Context) {
-	routeID, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+	routeID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	
 	var req domain.CreatePointRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

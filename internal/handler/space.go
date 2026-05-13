@@ -36,7 +36,11 @@ func CreateLocation(c *gin.Context) {
 }
 
 func GetLocation(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	location, err := spaceService.GetLocation(uint(id))
 	if err != nil {
 		response.Fail(c, http.StatusNotFound, "空间不存在")
@@ -48,10 +52,18 @@ func GetLocation(c *gin.Context) {
 
 func ListLocations(c *gin.Context) {
 	spaceType := c.Query("type")
-	floor, _ := strconv.Atoi(c.Query("floor"))
+	floorStr := c.Query("floor")
+	floor := 0
+	var err error
+	if floorStr != "" {
+		floor, err = strconv.Atoi(floorStr)
+		if err != nil {
+			response.ParamError(c, "无效的楼层参数")
+			return
+		}
+	}
 
 	var locations []domain.SpaceLocation
-	var err error
 
 	if spaceType != "" {
 		locations, err = spaceService.GetLocationsByType(domain.SpaceType(spaceType))
@@ -73,12 +85,20 @@ func ListLocations(c *gin.Context) {
 }
 
 func GetLocationTree(c *gin.Context) {
-	tree := spaceService.GetLocationTree()
+	tree, err := spaceService.GetLocationTree()
+	if err != nil {
+		response.Fail(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 	response.Success(c, tree)
 }
 
 func UpdateLocation(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	var req domain.CreateSpaceRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.ParamError(c, err.Error())
@@ -95,7 +115,11 @@ func UpdateLocation(c *gin.Context) {
 }
 
 func DeleteLocation(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.ParamError(c, "无效的ID参数")
+		return
+	}
 	if err := spaceService.DeleteLocation(uint(id)); err != nil {
 		response.Fail(c, http.StatusInternalServerError, err.Error())
 		return

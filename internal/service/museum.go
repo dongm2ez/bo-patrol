@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"gorm.io/gorm"
 	"github.com/bo-patrol/internal/domain"
 	"github.com/bo-patrol/internal/repository"
 )
@@ -17,7 +18,13 @@ func NewMuseumService(museumRepo *repository.MuseumRepository) *MuseumService {
 }
 
 func (s *MuseumService) CreateGallery(req *domain.CreateGalleryRequest) (*domain.Gallery, error) {
-	existing, _ := s.museumRepo.GetGalleryByCode(req.Code)
+	existing, err := s.museumRepo.GetGalleryByCode(req.Code)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	if existing != nil && existing.ID > 0 {
+		return nil, errors.New("展厅代码已存在")
+	}
 	if existing != nil && existing.ID > 0 {
 		return nil, errors.New("展厅代码已存在")
 	}
@@ -78,7 +85,13 @@ func (s *MuseumService) DeleteGallery(id uint) error {
 }
 
 func (s *MuseumService) CreateExhibit(req *domain.CreateExhibitRequest) (*domain.Exhibit, error) {
-	existing, _ := s.museumRepo.GetExhibitByCode(req.Code)
+	existing, err := s.museumRepo.GetExhibitByCode(req.Code)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, err
+	}
+	if existing != nil && existing.ID > 0 {
+		return nil, errors.New("展品代码已存在")
+	}
 	if existing != nil && existing.ID > 0 {
 		return nil, errors.New("展品代码已存在")
 	}

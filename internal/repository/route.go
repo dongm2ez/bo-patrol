@@ -28,10 +28,14 @@ func (r *RouteRepository) List(page, pageSize int) ([]domain.PatrolRoute, int64,
 	var total int64
 
 	offset := (page - 1) * pageSize
-	r.db.Model(&domain.PatrolRoute{}).Count(&total)
-	err := r.db.Preload("Points").Offset(offset).Limit(pageSize).Find(&routes).Error
+	if err := r.db.Model(&domain.PatrolRoute{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	if err := r.db.Preload("Points").Offset(offset).Limit(pageSize).Find(&routes).Error; err != nil {
+		return nil, 0, err
+	}
 
-	return routes, total, err
+	return routes, total, nil
 }
 
 func (r *RouteRepository) Update(id uint, updates map[string]interface{}) error {

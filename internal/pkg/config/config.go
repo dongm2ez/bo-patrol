@@ -78,6 +78,20 @@ func Load(configPath ...string) error {
 	v.AutomaticEnv()
 	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
+	bindEnvs(v)
+
+	if err := v.ReadInConfig(); err != nil {
+		return fmt.Errorf("读取配置文件失败: %w", err)
+	}
+
+	if err := v.Unmarshal(&GlobalConfig); err != nil {
+		return fmt.Errorf("解析配置失败: %w", err)
+	}
+
+	return nil
+}
+
+func bindEnvs(v *viper.Viper) {
 	_ = v.BindEnv("server.port", "SERVER_PORT")
 	_ = v.BindEnv("server.mode", "SERVER_MODE")
 	_ = v.BindEnv("database.host", "DB_HOST")
@@ -97,16 +111,6 @@ func Load(configPath ...string) error {
 	_ = v.BindEnv("minio.secretkey", "MINIO_SECRET_KEY")
 	_ = v.BindEnv("minio.bucket", "MINIO_BUCKET")
 	_ = v.BindEnv("minio.usessl", "MINIO_USESSL")
-
-	if err := v.ReadInConfig(); err != nil {
-		return fmt.Errorf("读取配置文件失败: %w", err)
-	}
-
-	if err := v.Unmarshal(&GlobalConfig); err != nil {
-		return fmt.Errorf("解析配置失败: %w", err)
-	}
-
-	return nil
 }
 
 func GetDSN() string {
